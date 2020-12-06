@@ -1,7 +1,3 @@
-//
-// Created by LukaDoncic on 11/28/20.
-//
-
 #ifndef PROMPT_AVL_H
 #define PROMPT_AVL_H
 #include "BST.h"
@@ -15,10 +11,12 @@ public:
     bool HasLeftChild() const;
     bool HasRightChild() const;
     int balancefactor(std::shared_ptr<AVLNode> v);
-    int getHeight(std::shared_ptr<BSTNode> currentNode);
+    int getHeight(std::shared_ptr<AVLNode> currentNode);
     int setHeight();
-    void leftRotation(std::shared_ptr<BSTNode> currentNode);
-    void rightRotation(std::shared_ptr<BSTNode> currentNode);
+    void leftRotation(std::shared_ptr<AVLNode> currentNode);
+    void rightRotation(std::shared_ptr<AVLNode> currentNode);
+    void leftrightRotation(std::shared_ptr<AVLNode> currentNode);
+    void rightleftRotation(std::shared_ptr<AVLNode> currentNode);
 
 private:
     int key_;
@@ -31,7 +29,7 @@ private:
 };
 
 
-class AVLTree : public BST{
+class AVLTree : public AVL{
 public:
     AVLTree();
     void Insert(int key);

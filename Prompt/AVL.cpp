@@ -1,7 +1,3 @@
-//
-// Created by LukaDoncic on 11/28/20.
-//
-
 #include "AVL.h"
 #include <iostream>
 
@@ -55,7 +51,7 @@ int AVLTree::setHeight() {
 }
 
 
-int AVLTree::getHeight(std::shared_ptr<BSTNode> currentNode) {
+int AVLTree::getHeight(std::shared_ptr<AVLNode> currentNode) {
     int height_ = 0;
     if (currentNode == NULL) {
         return 0;
@@ -67,7 +63,17 @@ int AVLTree::getHeight(std::shared_ptr<BSTNode> currentNode) {
 }
 
 
-void AVLTree::leftRotation(std::shared_ptr<BSTNode> currentNode) {
+void AVLTree::leftRotation(std::shared_ptr<AVLNode> currentNode) {
 
 }
 
+void AVLTree::rightRotation(std::shared_ptr<AVLNode> currentNode) {
+}
+
+void AVLTree::leftrightRotation(std::shared_ptr<AVLNode> currentNode) {
+
+}
+
+void AVLTree::rightleftRotation(std::shared_ptr<AVLNode> currentNode) {
+
+}

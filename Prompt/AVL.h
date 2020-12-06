@@ -13,6 +13,8 @@ public:
     int balancefactor(std::shared_ptr<AVLNode> v);
     int getHeight(std::shared_ptr<AVLNode> currentNode);
     int setHeight();
+
+    int max(int a, int b);
     void leftRotation(std::shared_ptr<AVLNode> currentNode);
     void rightRotation(std::shared_ptr<AVLNode> currentNode);
     void leftrightRotation(std::shared_ptr<AVLNode> currentNode);

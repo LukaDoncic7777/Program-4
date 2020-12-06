@@ -15,15 +15,18 @@ public:
     bool HasLeftChild() const;
     bool HasRightChild() const;
     int balancefactor(std::shared_ptr<AVLNode> v);
-    int height(std::shared_ptr<AVLNode> v);
+    int getHeight(std::shared_ptr<BSTNode> currentNode);
+    int setHeight();
     void leftRotation(std::shared_ptr<BSTNode> currentNode);
     void rightRotation(std::shared_ptr<BSTNode> currentNode);
 
 private:
     int key_;
+    int height_;
     std::weak_ptr<AVLNode> parent_;
     std::shared_ptr<AVLNode> left_;
     std::shared_ptr<AVLNode> right_;
+
     friend AVLTree;
 };
 
@@ -32,12 +35,11 @@ class AVLTree : public BST{
 public:
     AVLTree();
     void Insert(int key);
-    int getHeight(std::shared_ptr<BSTNode> currentNode);
-    int setHeight();
-
+    std::string JSON() const;
+    size_t size() const;
+    bool empty() const;
 
 private:
-    int height_;
     std::shared_ptr<AVLNode> root_;
     size_t size_;
 

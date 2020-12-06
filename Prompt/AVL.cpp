@@ -79,6 +79,15 @@ void AVLTree::leftRotation(std::shared_ptr<AVLNode> currentNode) {
 }
 
 void AVLTree::rightRotation(std::shared_ptr<AVLNode> currentNode) {
+	Node_x = currentNode -> left;
+	Node_T2 = Node_x -> right;
+
+	Node_x -> right = currentNode;
+	currentNode -> left = Node_T2;
+
+	currentNode -> height = max(height(currentNode -> left), height(currentNode -> right)) + 1;
+	Node_x -> height = max(height(Node_x -> left), height(Node_x -> right)) + 1;
+
 }
 
 void AVLTree::leftrightRotation(std::shared_ptr<AVLNode> currentNode) {

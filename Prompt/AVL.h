@@ -1,3 +1,7 @@
+//
+// Created by LukaDoncic on 11/28/20.
+//
+
 #ifndef PROMPT_AVL_H
 #define PROMPT_AVL_H
 #include "BST.h"
@@ -14,11 +18,6 @@ public:
     int getHeight(std::shared_ptr<AVLNode> currentNode);
     int setHeight();
 
-    int max(int a, int b);
-    void leftRotation(std::shared_ptr<AVLNode> currentNode);
-    void rightRotation(std::shared_ptr<AVLNode> currentNode);
-    void leftrightRotation(std::shared_ptr<AVLNode> currentNode);
-    void rightleftRotation(std::shared_ptr<AVLNode> currentNode);
 
 private:
     int key_;
@@ -26,22 +25,20 @@ private:
     std::weak_ptr<AVLNode> parent_;
     std::shared_ptr<AVLNode> left_;
     std::shared_ptr<AVLNode> right_;
-
     friend AVLTree;
 };
 
 
-class AVLTree : public AVL{
+class AVLTree{
 public:
     AVLTree();
     void Insert(int key);
     std::string JSON() const;
-    size_t size() const;
-    bool empty() const;
+    std::shared_ptr<AVLNode> leftRotation(std::weak_ptr<AVLNode> currentNode);
+    std::shared_ptr<AVLNode> rightRotation(std::weak_ptr<AVLNode> currentNode);
 
 private:
     std::shared_ptr<AVLNode> root_;
-    size_t size_;
 
 };
 #endif //PROMPT_AVL_H

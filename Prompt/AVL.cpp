@@ -1,3 +1,7 @@
+//
+// Created by LukaDoncic on 11/28/20.
+//
+
 #include "AVL.h"
 #include <iostream>
 
@@ -26,74 +30,51 @@ bool AVLNode::HasRightChild() const {
     return right_ != nullptr;
 }
 
+int AVLNode::setHeight() {
+    return height_;
+}
+
 int AVLNode::balancefactor(std::shared_ptr<AVLNode> v) {
     if (v == NULL) {
         return 0;
     }
-    return height(v->right_) - height(v->left_);
+    return getHeight(v->right_) - getHeight(v->left_);
 }
 
-int AVLNode::height(std::shared_ptr<AVLNode> v) {
-    int height_ = 0;
-    if (v == NULL) {
-        return 0;
-    }
-    else if ((v -> right_ != NULL) | (v -> left_ != NULL)){
-        height_++;
-    }
-    return height_;
-}
-
-
-
-int AVLTree::setHeight() {
-    return height_;
-}
-
-
-int AVLTree::getHeight(std::shared_ptr<AVLNode> currentNode) {
+int AVLNode::getHeight(std::shared_ptr<AVLNode> currentNode) {
     int height_ = 0;
     if (currentNode == NULL) {
-        return 0;
+        return height_;
     }
-    else if ((currentNode -> right_ != NULL) | (v -> left_ != NULL)){
+    else if ((currentNode -> right_ != NULL) | (currentNode -> left_ != NULL)){
         height_++;
     }
     return height_;
 }
 
-int max(int a, int b){
-	return (a > b) ? a :b;
+int AVLNode::setHeight() {          /*looks like useless*/
+    return height_;
 }
 
-void AVLTree::leftRotation(std::shared_ptr<AVLNode> currentNode) {
-	Node_y = currentNode -> right;
-	Node_T2 = Node_y -> left;
-	
-	Node_y -> left = currentNode;
-	currentNode -> right = Node_T2;
 
-	Node_y -> height = max(height(Node_y -> left), height(Node_y -> right)) + 1;
-	currentNode -> height = max(height(currentNode -> left), height(currentNode -> right)) + 1;	
-
+std::shared_ptr<AVLNode> AVLTree::leftRotation(std::weak_ptr<AVLNode> currentNode) {
+    std::shared_ptr<AVLNode> temp = currentNode->right_;
+    currentNode->right_ = temp->left_;
+    temp->left_ = currentNode;
+    if(currentNode->right_) {
+        currentNode->right_->parent_ = currentNode;
+    }
+    temp->parent_ = currentNode->parent_;
+    if(currentNode->parent_) {
+        if(currentNode == currentNode->parent_->left_) {
+            currentNode->parent->left = temp;
+        } else if(currentNode == currentNode->parent_->right_) {
+            currentNode->parent_->right_ = temp;
+        }
+    }
+    currentNode->parent_ = temp;
+    return temp;
 }
 
-void AVLTree::rightRotation(std::shared_ptr<AVLNode> currentNode) {
-	Node_x = currentNode -> left;
-	Node_T2 = Node_x -> right;
 
-	Node_x -> right = currentNode;
-	currentNode -> left = Node_T2;
 
-	currentNode -> height = max(height(currentNode -> left), height(currentNode -> right)) + 1;
-	Node_x -> height = max(height(Node_x -> left), height(Node_x -> right)) + 1;
-
-}
-
-void AVLTree::leftrightRotation(std::shared_ptr<AVLNode> currentNode) {
-
-}
-
-void AVLTree::rightleftRotation(std::shared_ptr<AVLNode> currentNode) {
-
-}

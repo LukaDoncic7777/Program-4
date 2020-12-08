@@ -46,33 +46,30 @@ int AVLNode::getHeight(std::shared_ptr<AVLNode> currentNode) {
     if (currentNode == NULL) {
         return height_;
     }
-    else if ((currentNode -> right_ != NULL) | (currentNode -> left_ != NULL)){
+    else if ((currentNode -> right_ != nullptr) | (currentNode -> left_ != nullptr)){
         height_++;
     }
     return height_;
 }
 
-int AVLNode::setHeight() {          /*looks like useless*/
-    return height_;
-}
 
-
-std::shared_ptr<AVLNode> AVLTree::leftRotation(std::weak_ptr<AVLNode> currentNode) {
+std::shared_ptr<AVLNode> AVLTree::leftRotation(std::shared_ptr<AVLNode> currentNode) {
+    //std::shared_ptr<AVLNode> currentNode = root_;
     std::shared_ptr<AVLNode> temp = currentNode->right_;
     currentNode->right_ = temp->left_;
     temp->left_ = currentNode;
     if(currentNode->right_) {
-        currentNode->right_->parent_ = currentNode;
+        (currentNode->right_->parent_).lock() = currentNode;
     }
-    temp->parent_ = currentNode->parent_;
-    if(currentNode->parent_) {
-        if(currentNode == currentNode->parent_->left_) {
-            currentNode->parent->left = temp;
-        } else if(currentNode == currentNode->parent_->right_) {
-            currentNode->parent_->right_ = temp;
+    (temp->parent_).lock() = (currentNode->parent_).lock();
+    if((currentNode->parent_).lcok()) {
+        if(currentNode == ((currentNode->parent_).lock())->left_) {
+            ((currentNode->parent_).lock())->left = temp;
+        } else if(currentNode == ((currentNode->parent_).lock())->right_) {
+            ((currentNode->parent_).lock())->right_ = temp;
         }
     }
-    currentNode->parent_ = temp;
+    (currentNode->parent_).lock() = temp;
     return temp;
 }
 

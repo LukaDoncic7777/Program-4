@@ -16,7 +16,6 @@ public:
     bool HasRightChild() const;
     int balancefactor(std::shared_ptr<AVLNode> v);
     int getHeight(std::shared_ptr<AVLNode> currentNode);
-    int setHeight();
 
 
 private:
@@ -34,8 +33,8 @@ public:
     AVLTree();
     void Insert(int key);
     std::string JSON() const;
-    std::shared_ptr<AVLNode> leftRotation(std::weak_ptr<AVLNode> currentNode);
-    std::shared_ptr<AVLNode> rightRotation(std::weak_ptr<AVLNode> currentNode);
+    std::shared_ptr<AVLNode> leftRotation(std::shared_ptr<AVLNode> currentNode);
+    std::shared_ptr<AVLNode> rightRotation(std::shared_ptr<AVLNode> currentNode);
 
 private:
     std::shared_ptr<AVLNode> root_;

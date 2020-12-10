@@ -136,6 +136,27 @@ void AVLTree::Insert(int key, std::shared_ptr<AVLNode> currentNode) {
         lastNode->right_ = std::make_shared<BSTNode>(key, lastNode);
     }
     size_++;
+        
+    //
+        if( balance_factor(lastNode) < -1 && balance_factor(lastNode -> left < 0){      
+                return rightRotation(lastNode);
+        }
+
+        else if( balance_factor(lastNode) > 1 && balance_factor(lastNode -> right > 0){
+                return leftRotation(lastNode);
+        }
+
+        else if( balance_factor(lastNode) < -1 && balance_factor(lastNode -> left > 0){
+                return right_left_rotation(lastNode);
+        }
+
+        else if( balance_factor(lastNode) > 1 && balance_factor(lastNode -> right < 0){
+                return left_right_rotatio(lastNode);
+        }
+     //
+        
+        
+        
 }
 
 nlohmann::json AVLTree::JSON() const {

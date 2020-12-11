@@ -1,22 +1,21 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include "priorityqueue.h"
+#include "AVL.h"
 #include "json.hpp"
 
 using namespace std;
 
-PriorityQueue operation(nlohmann::json* jobject) {
-    size_t maxheap = (*jobject)["metadata"]["maxHeapSize"];             /*extract the maxheapsize from jsonObject's metadata*/
-    PriorityQueue result(maxheap);
+AVLTree operation(nlohmann::json* jobject) {
+    size_t numOps = (*jobject)["metadata"]["numOps"];             /*extract the numOps from jsonObject's metadata*/
+    //AVLTree result(AVLTree);
 
     for (auto itr_ = jobject->begin(); itr_ != std::prev(jobject->end()); ++itr_) {    /*distinguish which operation it is, and then implement the operation */
         // insert operation
         if((*itr_)["operation"] == "insert") {
             result.insert((double)(*itr_)["key"]);
-        } else if((*itr_)["operation"] == "removeMin") {
-            result.removeMin();
         }
+       
     }
     
     return result;
@@ -28,10 +27,43 @@ int main(int argc, char** argv) {
     input_file.open(argv[1]);
     input_file >> jobject;
     // assign operations and output json object
-    PriorityQueue output_ = operation(&jobject);
+    AVLTree output_ = operation(&jobject);
     out_jobject = output_.JSON();
 
-    out_jobject["metadata"]["numOperations"] = jobject["metadata"]["numOperations"];
-    out_jobject["metadata"]["maxHeapSize"] = jobject["metadata"]["maxHeapSize"];
+    root = root_;
+    height = getHeight(root_);
+    size = size_;
+
+    for (auto itr_ = jobject->begin(); itr_ != std::prev(jobject->end()); ++itr_) {
+       
+        out_jobject[itr]["balance factor"] = balance_factor(itr);
+        out_jobject[itr]["height"] = getHeight(itr);
+            
+        if(itr ->HasLeftChild() != false){
+             out_jobject[itr]["left"] = itr -> left_;
+        }
+             
+        if(itr_ != root_){
+            out_jobject[itr]["parent"] = itr -> parent_.lock();
+        }
+         
+        if(itr ->HasRightChild() != false){
+            out_jobject[itr]["right"] = itr_right_;
+        }
+         
+        if(itr_ == root_){
+            out_jobject[itr]["root"] = "true";
+        }
+         
+    }
+    
+
+    out_jobject["metadata"]["height"] = height;
+    out_jobject["metadata"]["root"] = root;
+    out_jobject["metadata"]["size"] = size;
+    
+    
+    
+    
     cout << out_jobject.dump(2) << endl;
 }

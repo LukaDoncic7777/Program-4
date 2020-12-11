@@ -18,18 +18,6 @@ AVLNode::AVLNode(int key, std::weak_ptr<AVLNode> parent) :
         left_(nullptr),
         right_(nullptr) {}
 
-bool AVLNode::IsLeaf() const {
-    return left_ == nullptr && right_ == nullptr;
-}
-
-bool AVLNode::HasLeftChild() const {
-    return left_ != nullptr;
-}
-
-bool AVLNode::HasRightChild() const {
-    return right_ != nullptr;
-}
-
 
 int AVLNode::balance_factor(std::shared_ptr<AVLNode> v) {
     if (v == nullptr) {
@@ -66,14 +54,16 @@ void AVLNode::Replace_Right_Child(std::shared_ptr<AVLNode> v, std::shared_ptr<AV
 }
 
 
+AVLTree::AVLTree() : root_(nullptr), size_(0) {}
+
 std::shared_ptr<AVLNode> AVLTree::leftRotation(std::shared_ptr<AVLNode> currentNode) {
     std::shared_ptr<AVLNode> new_root = currentNode -> right;
     std::shared_ptr<AVLNode> ancestor = currentNode -> parent_.lock();
     std::shared_ptr<AVLNode> leaf = new_root-> left_;
-    if (currentNode->HasLeftChild() != false) {                             //check the circumstances whether the right child is nullptr or not
+    if (currentNode->left_ != false) {                             //check the circumstances whether the right child is nullptr or not
         Replace_left_Child(ancestor, new_root);
     }
-    else if(currentNode->HasRightChild() != false) {
+    else if(currentNode->right_ != false) {
         Replace_Right_Child(ancestor, new_root);
     }
     else {
@@ -90,10 +80,10 @@ std::shared_ptr<AVLNode> AVLTree::rightRotation(std::shared_ptr<AVLNode> current
     std::shared_ptr<AVLNode> new_root = currentNode -> left_;
     std::shared_ptr<AVLNode> ancestor = currentNode -> parent_.lock();
     std::shared_ptr<AVLNode> leaf = new_root-> right_;
-    if (currentNode->HasLeftChild() != false) {                             //check the circumstances whether the right child is nullptr or not
+    if (currentNode->left_ != nullptr) {                             //check the circumstances whether the right child is nullptr or not
         Replace_left_Child(ancestor, new_root);
     }
-    else if(currentNode->HasRightChild() != false) {
+    else if(currentNode->right_ != nullptr) {
         Replace_Right_Child(ancestor, new_root);
     }
     else {
@@ -102,68 +92,74 @@ std::shared_ptr<AVLNode> AVLTree::rightRotation(std::shared_ptr<AVLNode> current
     }
     Replace_Right_Child(new_root, currentNode);
     Replace_left_Child(currentNode, leaf);
-
     return new_root;
 }
 
-std::shared_ptr<AVLNode> AVLTree::left_right_rotation(std::shared_ptr<AVLNode> currentNode) {
+std::shared_ptr<AVLNode> AVLTree::left_right_rotation(std::shared_ptr<AVLNode> currentNode) {   //u only do the left right rotation
     leftRotation(currentNode->left_);
     return rightRotation(currentNode)
 }
 
-std::shared_ptr<AVLNode> AVLTree::right_left_rotation(std::shared_ptr<AVLNode> currentNode) {
+std::shared_ptr<AVLNode> AVLTree::right_left_rotation(std::shared_ptr<AVLNode> currentNode) {   //u only do the right left rotation
     rightRotation(currentNode->right_);
     return leftRotation(currentNode)
 }
 
-void AVLTree::Insert(int key, std::shared_ptr<AVLNode> currentNode) {
+void AVLTree::Insert(int key) {
     if (root_ == nullptr) {
         root_ = std::make_shared<AVLNode>(key);
         size_++;
         return;
     }
     std::shared_ptr<AVLNode> currentNode = root_, lastNode = nullptr;
-
-
     while (currentNode != nullptr) {
         lastNode = currentNode;
         currentNode = (key < currentNode->key_) ?
                       currentNode->left_ : currentNode->right_;
     }
     if (key < lastNode->key_) {
-        lastNode->left_ = std::make_shared<BSTNode>(key, lastNode);
+        lastNode->left_ = std::make_shared<AVLNode>(key, lastNode);
     } else {
-        lastNode->right_ = std::make_shared<BSTNode>(key, lastNode);
+        lastNode->right_ = std::make_shared<AVLNode>(key, lastNode);
     }
     size_++;
-        
-    //
-        if( balance_factor(lastNode) < -1 && balance_factor(lastNode -> left < 0){      
-                return rightRotation(lastNode);
-        }
 
-        else if( balance_factor(lastNode) > 1 && balance_factor(lastNode -> right > 0){
-                return leftRotation(lastNode);
-        }
+    lastNode -> height_ = 1 + lastNode -> getHeight(lastNode);
+    lastNode -> balance_factor = lastNode -> get_balance_factor(lastNode);
 
-        else if( balance_factor(lastNode) < -1 && balance_factor(lastNode -> left > 0){
-                return right_left_rotation(lastNode);
+    while (lastNode != nullptr){
+        //lastNode -> height_ = this -> getHeight(lastNode);    //set the lastNode's height to 0
+        //lastNode -> balance_factor_ = this -> balance_factor(lastNode); //set the lastNode's balance factor to 0
+        //Right Right case
+        if(lastNode -> balance_factor > 1 && key < lastNode->left_->key){
+            lastNode -> rightRotation(lastNode);
+            return;
         }
+        //Left Right Case
+        else if(lastNode -> balance_factor > 1 && key > lastNode->left_->key){
+            lastNode->left_ = lastNode->leftRotation(lastNode->left_);
+            lastNode->rightRotation(lastNode);
+            return;
+        }
+        //Right Right Case
+        else if(lastNode -> balance_factor < -1 && key > lastNode->right_->key){
+            lastNode -> leftRotation(lastNode);
+            return;
+        }
+        //Right Left Case
+        else if(lastNode -> balance_factor < -1 && key > lastNode->right_->key){
+            lastNode -> right_ = lastNode -> rightRotation(lastNode->right_);
+            lastNode -> leftRotation(lastNode);
+            return;
+        }
+    }
 
-        else if( balance_factor(lastNode) > 1 && balance_factor(lastNode -> right < 0){
-                return left_right_rotatio(lastNode);
-        }
-     //
-        
-        
-        
-}
 
 nlohmann::json AVLTree::JSON() const {
     nlohmann::json result;
-    std::queue< std::shared_ptr<AVLNode> > nodes;
-
+    std::queue<std::shared_ptr<AVLNode> > nodes;
     if (root_ != nullptr) {
+        result["height"] = root_->height_;
         result["root"] = root_->key_;
         nodes.push(root_);
         while (!nodes.empty()) {
@@ -171,10 +167,12 @@ nlohmann::json AVLTree::JSON() const {
             nodes.pop();
             std::string key = std::to_string(v->key_);
             if (v->left_ != nullptr) {
+                result[key]["balance factor"] = v->left_->balance_factor_;
                 result[key]["left"] = v->left_->key_;
                 nodes.push(v->left_);
             }
             if (v->right_ != nullptr) {
+                result[key]["balance factor"] = v->right_->balance_factor_;
                 result[key]["right"] = v->right_->key_;
                 nodes.push(v->right_);
             }
@@ -186,7 +184,7 @@ nlohmann::json AVLTree::JSON() const {
         }
     }
     result["size"] = size_;
-    return result + "\n";
-
+    return result;
+}
 
 

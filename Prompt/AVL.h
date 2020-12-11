@@ -11,17 +11,14 @@ class AVLNode{
 public:
     AVLNode(int key);
     AVLNode(int key, std::weak_ptr<AVLNode> parent);
-    bool IsLeaf() const;
-    bool HasLeftChild() const;
-    bool HasRightChild() const;
-    int balance_factor(std::shared_ptr<AVLNode> v);
+    int get_balance_factor(std::shared_ptr<AVLNode> v);
     int getHeight(std::shared_ptr<AVLNode> currentNode);
     void Replace_left_Child(std::shared_ptr<AVLNode> v, std::shared_ptr<AVLNode> u);
     void Replace_Right_Child(std::shared_ptr<AVLNode> v, std::shared_ptr<AVLNode> u);
-
 private:
     int key_;
     int height_;
+    int balance_factor;
     std::weak_ptr<AVLNode> parent_;
     std::shared_ptr<AVLNode> left_;
     std::shared_ptr<AVLNode> right_;
@@ -32,15 +29,15 @@ private:
 class AVLTree{
 public:
     AVLTree();
-    void Insert(int key);    // not implement yet
+    void Insert(int key);
     nlohmann::json JSON() const;
     std::shared_ptr<AVLNode> leftRotation(std::shared_ptr<AVLNode> currentNode);
     std::shared_ptr<AVLNode> rightRotation(std::shared_ptr<AVLNode> currentNode);
     std::shared_ptr<AVLNode> left_right_rotation(std::shared_ptr<AVLNode> currentNode);
     std::shared_ptr<AVLNode> right_left_rotation(std::shared_ptr<AVLNode> currentNode);
-
 private:
     std::shared_ptr<AVLNode> root_;
+    size_t size_;
 
 };
 #endif //PROMPT_AVL_H

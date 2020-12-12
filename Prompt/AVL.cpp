@@ -1,7 +1,3 @@
-//
-// Created by LukaDoncic on 11/28/20.
-//
-
 #include "AVL.h"
 #include <iostream>
 
@@ -19,7 +15,7 @@ AVLNode::AVLNode(int key, std::weak_ptr<AVLNode> parent) :
         right_(nullptr) {}
 
 
-int AVLNode::balance_factor(std::shared_ptr<AVLNode> v) {
+int AVLNode::get_balance_factor(std::shared_ptr<AVLNode> v) {
     if (v == nullptr) {
         return 0;
     }
@@ -57,13 +53,13 @@ void AVLNode::Replace_Right_Child(std::shared_ptr<AVLNode> v, std::shared_ptr<AV
 AVLTree::AVLTree() : root_(nullptr), size_(0) {}
 
 std::shared_ptr<AVLNode> AVLTree::leftRotation(std::shared_ptr<AVLNode> currentNode) {
-    std::shared_ptr<AVLNode> new_root = currentNode -> right;
+    std::shared_ptr<AVLNode> new_root = currentNode -> right_;
     std::shared_ptr<AVLNode> ancestor = currentNode -> parent_.lock();
     std::shared_ptr<AVLNode> leaf = new_root-> left_;
-    if (currentNode->left_ != false) {                             //check the circumstances whether the right child is nullptr or not
+    if (currentNode->left_) {                             //check the circumstances whether the right child is nullptr or not
         Replace_left_Child(ancestor, new_root);
     }
-    else if(currentNode->right_ != false) {
+    else if(currentNode->right_) {
         Replace_Right_Child(ancestor, new_root);
     }
     else {
@@ -97,12 +93,12 @@ std::shared_ptr<AVLNode> AVLTree::rightRotation(std::shared_ptr<AVLNode> current
 
 std::shared_ptr<AVLNode> AVLTree::left_right_rotation(std::shared_ptr<AVLNode> currentNode) {   //u only do the left right rotation
     leftRotation(currentNode->left_);
-    return rightRotation(currentNode)
+    return rightRotation(currentNode);
 }
 
 std::shared_ptr<AVLNode> AVLTree::right_left_rotation(std::shared_ptr<AVLNode> currentNode) {   //u only do the right left rotation
     rightRotation(currentNode->right_);
-    return leftRotation(currentNode)
+    return leftRotation(currentNode);
 }
 
 void AVLTree::Insert(int key) {
@@ -131,23 +127,23 @@ void AVLTree::Insert(int key) {
         //lastNode -> height_ = this -> getHeight(lastNode);    //set the lastNode's height to 0
         //lastNode -> balance_factor_ = this -> balance_factor(lastNode); //set the lastNode's balance factor to 0
         //Right Right case
-        if(lastNode -> balance_factor > 1 && key < lastNode->left_->key){
+        if(lastNode -> balance_factor > 1 && key < lastNode->left_->key_){
             lastNode -> rightRotation(lastNode);
             return;
         }
         //Left Right Case
-        else if(lastNode -> balance_factor > 1 && key > lastNode->left_->key){
+        else if(lastNode -> balance_factor > 1 && key > lastNode->left_->key_){
             lastNode->left_ = lastNode->leftRotation(lastNode->left_);
             lastNode->rightRotation(lastNode);
             return;
         }
         //Right Right Case
-        else if(lastNode -> balance_factor < -1 && key > lastNode->right_->key){
+        else if(lastNode -> balance_factor < -1 && key > lastNode->right_->key_){
             lastNode -> leftRotation(lastNode);
             return;
         }
         //Right Left Case
-        else if(lastNode -> balance_factor < -1 && key > lastNode->right_->key){
+        else if(lastNode -> balance_factor < -1 && key > lastNode->right_->key_){
             lastNode -> right_ = lastNode -> rightRotation(lastNode->right_);
             lastNode -> leftRotation(lastNode);
             return;
@@ -167,12 +163,12 @@ nlohmann::json AVLTree::JSON() const {
             nodes.pop();
             std::string key = std::to_string(v->key_);
             if (v->left_ != nullptr) {
-                result[key]["balance factor"] = v->left_->balance_factor_;
+                result[key]["balance factor"] = v->left_->balance_factor;
                 result[key]["left"] = v->left_->key_;
                 nodes.push(v->left_);
             }
             if (v->right_ != nullptr) {
-                result[key]["balance factor"] = v->right_->balance_factor_;
+                result[key]["balance factor"] = v->right_->balance_factor;
                 result[key]["right"] = v->right_->key_;
                 nodes.push(v->right_);
             }
@@ -186,5 +182,5 @@ nlohmann::json AVLTree::JSON() const {
     result["size"] = size_;
     return result;
 }
-
+}
 

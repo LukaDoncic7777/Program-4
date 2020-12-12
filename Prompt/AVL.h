@@ -1,11 +1,8 @@
-//
-// Created by LukaDoncic on 11/28/20.
-//
-
 #ifndef PROMPT_AVL_H
 #define PROMPT_AVL_H
 #include "BST.h"
 #include <memory>
+#include "json.hpp"
 
 class AVLNode{
 public:
@@ -15,16 +12,16 @@ public:
     int getHeight(std::shared_ptr<AVLNode> currentNode);
     void Replace_left_Child(std::shared_ptr<AVLNode> v, std::shared_ptr<AVLNode> u);
     void Replace_Right_Child(std::shared_ptr<AVLNode> v, std::shared_ptr<AVLNode> u);
-private:
+//private:
     int key_;
     int height_;
     int balance_factor;
     std::weak_ptr<AVLNode> parent_;
     std::shared_ptr<AVLNode> left_;
     std::shared_ptr<AVLNode> right_;
-    friend AVLTree;
-};
 
+    friend class AVLTree;
+};
 
 class AVLTree{
 public:
